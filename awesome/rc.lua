@@ -1,7 +1,18 @@
 -- If LuaRocks is installed, make sure that packages installed through it are
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
-pcall(require, "luarocks.loader")
 
+
+-- Set theme and prefrences
+-- ===================================================================
+local themes = {
+	"arctic",    --1--
+}
+-- select current theme from above list
+local theme = themes[1]
+
+-- Load awesome libraries
+-- ===================================================================
+pcall(require, "luarocks.loader")
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -18,9 +29,10 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
--- {{{ Error handling
+-- Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
+-- ===================================================================
 if awesome.startup_errors then
     naughty.notify({ preset = naughty.config.presets.critical,
                      title = "Oops, there were errors during startup!",
@@ -41,14 +53,15 @@ do
         in_error = false
     end)
 end
--- }}}
 
--- Shell script to autorun programs on launch
+-- Launch apps on startup
+-- ===================================================================
 awful.spawn.with_shell("~/.config/awesome/autorun.sh")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init("/home/matte/.config/awesome/theme.lua")
+local theme_dir = "/home/matte/.config/awesome/themes/" .. theme .. "/"
+beautiful.init(theme_dir .. "theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
@@ -202,7 +215,7 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "bottom", screen = s })
+    s.mywibox = awful.wibar({ position = "top", screen = s })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
