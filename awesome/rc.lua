@@ -203,41 +203,70 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
         screen  = s,
-        filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
-    }
+	filter  = awful.widget.taglist.filter.all,
+	buttons = taglist_buttons
+}
 
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons,
+-- Create a tasklist widget
+s.mytasklist = awful.widget.tasklist {
+	screen  = s,
+	filter  = awful.widget.tasklist.filter.currenttags,
+	buttons = tasklist_buttons,
 	style   = {
-	    shape_border_width = 1,
-	    shape_border_color = "#ffffff00",
-	    shape = gears.shape.rounded_bar,
-    	},
+		--shape_border_width = 3,
+		--shape_border_color = "#ffffff00",
+		--shape = gears.shape.circle,
+	},
+	layout = {	
+		--spacing = 3,
+		layout = wibox.layout.fixed.horizontal,
+	},
+	widget_template = {
+	    {
+	        {
+		    {
+	                {
+		            id = 'clienticon',
+			    widget = awful.widget.clienticon,
+		        },
+		        margins = 2,
+		        widget = wibox.container.margin,
+	            },
+		    {
+		        id = 'text_role',
+		        widget = wibox.widget.textbox,
+		    },
+		    layout = wibox.layout.fixed.horizontal,
+	        },
+		left = 20,
+		right = 20,
+		widget = wibox.container.margin,
+	    }, 
+	    id = 'background_role',
+	    widget = wibox.container.background,
+	    create_callback = function(self, c, index, objects)
+		self:get_children_by_id('clienticon')[1].client = c
+	    end,
+        },
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "bottom", screen = s })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 40, border_width = 0 })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
+	--expand = 'none',    
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            --mylauncher,
-            --s.mytaglist,
             s.mypromptbox,
         },
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            --mykeyboardlayout,
             wibox.widget.systray(),
             mytextclock,
-            s.mylayoutbox,
+            --s.mylayoutbox,
         },
     }
 end)
@@ -253,6 +282,9 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
+    -- My Bindings
+    -- No Bindings Yet
+
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
